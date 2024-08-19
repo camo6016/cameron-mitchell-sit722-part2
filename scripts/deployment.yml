@@ -1,1 +1,36 @@
-# Write Kubernetes Deployment Script
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: books-deployment
+  labels:
+    app: books
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: books
+  template:
+    metadata:
+      labels:
+        app: books
+    spec:
+      containers:
+      - name: books
+        image: sixtwopassbooks:v0.1
+        ports:
+        - containerPort: 8000
+        env:
+          - name: DATABASE_URL
+            value: "postgresql://books_cy7w_user:D9H7DHjT60Kmas8WGsXrb0CBIEWHMDIf@dpg-cr1guei3esus73auodvg-a.singapore-postgres.render.com/books_cy7w"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: books-service
+spec:
+  selector:
+    app: books
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8000
